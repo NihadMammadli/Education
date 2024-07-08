@@ -1,9 +1,9 @@
-import { Modal } from 'antd';
+import { Drawer } from 'antd';
 import React from 'react';
 
-const ConfirmModal = ({ open, close, id, deleteFunction }) => {
+const FilterDrawer = ({ open, close, id, deleteFunction }) => {
     return (
-        <Modal
+        <Drawer
             open={open}
             title="Corpus"
             onClose={close}
@@ -11,8 +11,8 @@ const ConfirmModal = ({ open, close, id, deleteFunction }) => {
             onOk={() => deleteFunction(id)}
         >
             Are you sure about deleting ?
-        </Modal>
+        </Drawer>
     );
 };
 
-export default ConfirmModal;
+export default FilterDrawer;

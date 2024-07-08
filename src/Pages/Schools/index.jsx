@@ -2,17 +2,23 @@ import axios from "axios";
 import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
 import { DeleteOutlined } from "@ant-design/icons";
-import { ColumnHeader, ConfirmModal } from "../../Components";
+import { ColumnHeader, ConfirmModal, FilterDrawer } from "../../Components";
 
 function App() {
-    const [schools, setSchools] = useState([])
-
-    const [confirmOpen, setConfirmOpen] = useState(false)
-    const [deletingID, setDeletingID] = useState()
+    // Filter
+    const [filterOpen, setFilterOpen] = useState(false)
 
     const handleFilter = () => {
-        console.log("a")
+        setFilterOpen(true)
     }
+
+    const closeFilter = () => {
+        setFilterOpen(false)
+    }
+
+    // Delete
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deletingID, setDeletingID] = useState()
 
     const handleDelete = (id) => {
         setDeletingID(id)
@@ -34,6 +40,9 @@ function App() {
         })
     }
 
+    // Get Data
+    const [schools, setSchools] = useState([])
+
     const getTableData = () => {
         axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/schools").then((res) => {
             setSchools(res?.data)
@@ -46,6 +55,7 @@ function App() {
         getTableData()
     }, [])
 
+    // Columns
     const columns = [
         {
             title: <ColumnHeader header='Name' onFilter={handleFilter} />,
@@ -82,6 +92,8 @@ function App() {
             <Table dataSource={schools} columns={columns} />
 
             <ConfirmModal open={confirmOpen} close={closeDelete} deleteFunction={confirmDelete} id={deletingID} />
+
+            <FilterDrawer open={filterOpen} close={closeFilter} />
         </>
     );
 }
