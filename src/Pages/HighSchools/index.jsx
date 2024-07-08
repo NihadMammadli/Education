@@ -1,23 +1,50 @@
+import axios from "axios";
 import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
-import axios from "axios";
-import { ColumnHeader } from "../../Components";
 import { DeleteOutlined } from "@ant-design/icons";
+import { ColumnHeader, ConfirmModal } from "../../Components";
 
 function App() {
     const [highSchools, setHighSchools] = useState([])
+
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deletingID, setDeletingID] = useState()
 
     const handleFilter = () => {
         console.log("a")
     }
 
     const handleDelete = (id) => {
+        setDeletingID(id)
+        setConfirmOpen(true)
+    }
+
+    const closeDelete = () => {
+        setDeletingID(0)
+        setConfirmOpen(false)
+    }
+
+    const confirmDelete = (id) => {
         axios.delete(`https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/high_schools/${id}`).then((res) => {
+            setConfirmOpen(false)
+            setDeletingID(0)
             getTableData()
         }).catch((error) => {
             console.error(error)
         })
     }
+
+    const getTableData = () => {
+        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/high_schools").then((res) => {
+            setHighSchools(res?.data)
+        }).catch((error) => {
+            console.error(error)
+        })
+    }
+
+    useEffect(() => {
+        getTableData()
+    }, [])
 
     const columns = [
         {
@@ -63,21 +90,11 @@ function App() {
         }
     ];
 
-    const getTableData = () => {
-        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/high_schools").then((res) => {
-            setHighSchools(res?.data)
-        }).catch((error) => {
-            console.error(error)
-        })
-    }
-
-    useEffect(() => {
-        getTableData()
-    }, [])
-
     return (
         <>
             <Table dataSource={highSchools} columns={columns} />
+
+            <ConfirmModal open={confirmOpen} close={closeDelete} deleteFunction={confirmDelete} id={deletingID} />
         </>
     );
 }

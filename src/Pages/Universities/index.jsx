@@ -2,13 +2,17 @@ import axios from "axios";
 import View from "./View"
 import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
-import { ColumnHeader } from "../../Components";
+import { ColumnHeader, ConfirmModal } from "../../Components";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 
 function App() {
     const [universities, setUniversities] = useState([])
+
     const [viewData, setViewData] = useState([])
     const [viewOpen, setViewOpen] = useState(false)
+
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deletingID, setDeletingID] = useState()
 
     const handleFilter = () => {
         console.log("a")
@@ -24,12 +28,36 @@ function App() {
     }
 
     const handleDelete = (id) => {
+        setDeletingID(id)
+        setConfirmOpen(true)
+    }
+
+    const closeDelete = () => {
+        setDeletingID(0)
+        setConfirmOpen(false)
+    }
+
+    const confirmDelete = (id) => {
         axios.delete(`https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities/${id}`).then((res) => {
+            setConfirmOpen(false)
+            setDeletingID(0)
             getTableData()
         }).catch((error) => {
             console.error(error)
         })
     }
+
+    const getTableData = () => {
+        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities").then((res) => {
+            setUniversities(res?.data)
+        }).catch((error) => {
+            console.error(error)
+        })
+    }
+
+    useEffect(() => {
+        getTableData()
+    }, [])
 
     const columns = [
         {
@@ -98,23 +126,12 @@ function App() {
         }
     ];
 
-    const getTableData = () => {
-        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities").then((res) => {
-            setUniversities(res?.data)
-        }).catch((error) => {
-            console.error(error)
-        })
-    }
-
-    useEffect(() => {
-        getTableData()
-    }, [])
-
     return (
         <>
             <Table dataSource={universities} columns={columns} />
 
             <View open={viewOpen} close={closeView} data={viewData} />
+            <ConfirmModal open={confirmOpen} close={closeDelete} deleteFunction={confirmDelete} id={deletingID} />
         </>
     );
 }
