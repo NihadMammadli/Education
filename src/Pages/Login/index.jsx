@@ -15,7 +15,7 @@ function App() {
         const { email, password } = values;
 
         try {
-            // Sorry for this absurdity, because I didn't had much time and the mock Api that I used didn't provide with proper auth I did this. It is just a simulation ofc not real.
+            // Sorry for this absurdity, as I didn't had much time and the mock Api that I used didn't provide with proper auth I did this. It is just a simulation ofc not real.
             if (users.filter(user => user?.email == email && user?.password == password)?.length > 0) {
                 navigate('/education');
             }

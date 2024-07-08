@@ -89,7 +89,7 @@ function App() {
 
     return (
         <>
-            <Table dataSource={schools} columns={columns} />
+            <Table dataSource={schools} columns={columns} rowKey="id"/>
 
             <ConfirmModal open={confirmOpen} close={closeDelete} deleteFunction={confirmDelete} id={deletingID} />
 

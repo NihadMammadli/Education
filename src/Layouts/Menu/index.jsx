@@ -16,8 +16,6 @@ const getItem = (label, key, url, icon, children) => ({
   children,
 });
 
-const { pathname } = window.location
-
 const items = [
   getItem(
     "Universities",
@@ -44,26 +42,7 @@ const Index = () => {
   const Navigation = useNavigate();
 
   const onSelect = (event) => {
-    const { keyPath } = event;
-    const path = keyPath.reverse();
-    const { length } = path;
-
-    let url;
-
-    switch (length) {
-      case 1: {
-        url = items.find((value) => value.key === path[0]).url;
-        break;
-      }
-      case 2: {
-        const children = items.find((value) => value.key === path[0]).children;
-        url = children.find((value) => value.key === path[1]).url;
-        break;
-      }
-
-      default:
-        url = import.meta.env.VITE_HOME;
-    }
+    let url = items.find((value) => value.key === event?.key)?.url
 
     Navigation(url);
   };

@@ -139,7 +139,7 @@ function App() {
 
     return (
         <>
-            <Table dataSource={universities} columns={columns} />
+            <Table dataSource={universities} columns={columns} rowKey="id" />
 
             <View open={viewOpen} close={closeView} data={viewData} />
 
