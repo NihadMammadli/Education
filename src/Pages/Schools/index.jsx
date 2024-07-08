@@ -1,13 +1,22 @@
+import axios from "axios";
 import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
-import axios from "axios";
 import { ColumnHeader } from "../../Components";
+import { DeleteOutlined } from "@ant-design/icons";
 
 function App() {
-    const [universities, setUniversities] = useState([])
+    const [schools, setSchools] = useState([])
 
     const handleFilter = () => {
         console.log("a")
+    }
+
+    const handleDelete = (id) => {
+        axios.delete(`https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/schools/${id}`).then((res) => {
+            getTableData()
+        }).catch((error) => {
+            console.error(error)
+        })
     }
 
     const columns = [
@@ -17,54 +26,45 @@ function App() {
             key: 'name',
         },
         {
-            title: <ColumnHeader header='Creation Date' onFilter={handleFilter} />,
-            dataIndex: 'creation_date',
-            key: 'creation_date',
+            title: <ColumnHeader header='School Level' onFilter={handleFilter} />,
+            dataIndex: 'level',
+            key: 'level',
         },
         {
-            title: <ColumnHeader header='Number of Faculties' onFilter={handleFilter} />,
-            dataIndex: 'faculty_number',
-            key: 'faculty_number',
+            title: <ColumnHeader header='Pricipal' onFilter={handleFilter} />,
+            dataIndex: 'principal',
+            key: 'principal',
         },
         {
-            title: <ColumnHeader header='Global Ranking' onFilter={handleFilter} />,
-            dataIndex: 'global_ranking',
-            key: 'global_ranking',
+            title: <ColumnHeader header='District' onFilter={handleFilter} />,
+            dataIndex: 'district',
+            key: 'district',
         },
-        // Because of the mock API that I am using it is kinda hard to implement some functionalities
         {
-            title: <ColumnHeader header='Programs Offered' onFilter={handleFilter} />,
-            dataIndex: 'offered_programs',
-            key: 'offered_programs',
-            render: (_, { offered_programs }) => (
+            title: "Delete",
+            render: (obj) => (
                 <>
-                    {offered_programs?.map((program) => {
-                        let color = program.length > 5 ? 'geekblue' : 'green';
-                        if (program === 'loser') {
-                            color = 'volcano';
-                        }
-                        return (
-                            <Tag color={color} key={program}>
-                                {program}
-                            </Tag>
-                        );
-                    })}
+                    <DeleteOutlined onClick={() => handleDelete(obj?.id)} />
                 </>
-            ),
-        },
+            )
+        }
     ];
 
-    useEffect(() => {
-        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities").then((res) => {
-            setUniversities(res?.data)
+    const getTableData = () => {
+        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/schools").then((res) => {
+            setSchools(res?.data)
         }).catch((error) => {
             console.error(error)
         })
+    }
+
+    useEffect(() => {
+        getTableData()
     }, [])
 
     return (
         <>
-            <Table dataSource={universities} columns={columns} />
+            <Table dataSource={schools} columns={columns} />
         </>
     );
 }

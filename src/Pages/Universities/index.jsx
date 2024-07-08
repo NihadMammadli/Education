@@ -1,9 +1,9 @@
+import axios from "axios";
+import View from "./View"
 import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
-import axios from "axios";
 import { ColumnHeader } from "../../Components";
-import View from "./View"
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 
 function App() {
     const [universities, setUniversities] = useState([])
@@ -21,6 +21,14 @@ function App() {
 
     const closeView = () => {
         setViewOpen(false)
+    }
+
+    const handleDelete = (id) => {
+        axios.delete(`https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities/${id}`).then((res) => {
+            getTableData()
+        }).catch((error) => {
+            console.error(error)
+        })
     }
 
     const columns = [
@@ -79,14 +87,27 @@ function App() {
                 </>
             ),
         },
+
+        {
+            title: "Delete",
+            render: (obj) => (
+                <>
+                    <DeleteOutlined onClick={() => handleDelete(obj?.id)} />
+                </>
+            )
+        }
     ];
 
-    useEffect(() => {
+    const getTableData = () => {
         axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities").then((res) => {
             setUniversities(res?.data)
         }).catch((error) => {
             console.error(error)
         })
+    }
+
+    useEffect(() => {
+        getTableData()
     }, [])
 
     return (

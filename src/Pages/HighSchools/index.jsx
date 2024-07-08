@@ -2,12 +2,21 @@ import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
 import axios from "axios";
 import { ColumnHeader } from "../../Components";
+import { DeleteOutlined } from "@ant-design/icons";
 
 function App() {
-    const [universities, setUniversities] = useState([])
+    const [highSchools, setHighSchools] = useState([])
 
     const handleFilter = () => {
         console.log("a")
+    }
+
+    const handleDelete = (id) => {
+        axios.delete(`https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/high_schools/${id}`).then((res) => {
+            getTableData()
+        }).catch((error) => {
+            console.error(error)
+        })
     }
 
     const columns = [
@@ -44,19 +53,31 @@ function App() {
                 </>
             ),
         },
+        {
+            title: "Delete",
+            render: (obj) => (
+                <>
+                    <DeleteOutlined onClick={() => handleDelete(obj?.id)} />
+                </>
+            )
+        }
     ];
 
-    useEffect(() => {
+    const getTableData = () => {
         axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/high_schools").then((res) => {
-            setUniversities(res?.data)
+            setHighSchools(res?.data)
         }).catch((error) => {
             console.error(error)
         })
+    }
+
+    useEffect(() => {
+        getTableData()
     }, [])
 
     return (
         <>
-            <Table dataSource={universities} columns={columns} />
+            <Table dataSource={highSchools} columns={columns} />
         </>
     );
 }
