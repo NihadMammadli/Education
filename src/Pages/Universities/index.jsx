@@ -2,12 +2,25 @@ import { Table, Tag } from "antd";
 import { useEffect, useState } from "react"
 import axios from "axios";
 import { ColumnHeader } from "../../Components";
+import View from "./View"
+import { EyeOutlined } from "@ant-design/icons";
 
 function App() {
     const [universities, setUniversities] = useState([])
+    const [viewData, setViewData] = useState([])
+    const [viewOpen, setViewOpen] = useState(false)
 
     const handleFilter = () => {
         console.log("a")
+    }
+
+    const handleCorpus = (corpus) => {
+        setViewOpen(true)
+        setViewData(corpus)
+    }
+
+    const closeView = () => {
+        setViewOpen(false)
     }
 
     const columns = [
@@ -31,6 +44,8 @@ function App() {
             dataIndex: 'global_ranking',
             key: 'global_ranking',
         },
+
+        // Because of the mock API that I am using it is kinda hard to implement some functionalities
         {
             title: <ColumnHeader header='Programs Offered' onFilter={handleFilter} />,
             dataIndex: 'offered_programs',
@@ -51,6 +66,19 @@ function App() {
                 </>
             ),
         },
+
+        // Because of the mock API that I am using it is kinda hard to implement some functionalities
+        // Sorry for that
+        {
+            title: <ColumnHeader header='Corpuses' />,
+            dataIndex: 'corpus',
+            key: 'corpus',
+            render: (_, { corpus }) => (
+                <>
+                    <EyeOutlined onClick={() => handleCorpus(corpus)} />
+                </>
+            ),
+        },
     ];
 
     useEffect(() => {
@@ -64,6 +92,8 @@ function App() {
     return (
         <>
             <Table dataSource={universities} columns={columns} />
+
+            <View open={viewOpen} close={closeView} data={viewData} />
         </>
     );
 }

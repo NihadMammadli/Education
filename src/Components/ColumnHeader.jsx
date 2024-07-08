@@ -12,7 +12,9 @@ const Index = ({ header, onFilter }) => {
                 {header}
             </Text>
 
-            <FilterOutlined onClick={onFilter} />
+            {onFilter &&
+                <FilterOutlined onClick={onFilter} />
+            }
         </Row>
     )
 };

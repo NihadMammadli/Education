@@ -31,6 +31,7 @@ function App() {
             dataIndex: 'global_ranking',
             key: 'global_ranking',
         },
+        // Because of the mock API that I am using it is kinda hard to implement some functionalities
         {
             title: <ColumnHeader header='Programs Offered' onFilter={handleFilter} />,
             dataIndex: 'offered_programs',

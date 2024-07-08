@@ -26,8 +26,9 @@ function App() {
             dataIndex: 'students_enrolled',
             key: 'students_enrolled',
         },
+        // Because of the mock API that I am using it is kinda hard to implement some functionalities
         {
-            title: <ColumnHeader header='Programs Offered' onFilter={handleFilter} />,
+            title: <ColumnHeader header='Type of School' onFilter={handleFilter} />,
             dataIndex: 'type',
             key: 'type',
             render: (_, { type }) => (
