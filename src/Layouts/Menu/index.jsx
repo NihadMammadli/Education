@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Menu } from 'antd';
 
 import {
-  HomeOutlined,
   BellOutlined,
   UserOutlined,
   AppstoreOutlined,
@@ -20,13 +19,6 @@ const getItem = (label, key, url, icon, children) => ({
 const { pathname } = window.location
 
 const items = [
-  getItem(
-    "Home",
-    "home",
-    "/education/home",
-    <HomeOutlined />
-  ),
-
   getItem(
     "Universities",
     "universities",
@@ -78,7 +70,7 @@ const Index = () => {
 
   return (
     <Menu
-      defaultSelectedKeys={pathname.substring("/cms/".length)}
+      defaultSelectedKeys={window.location.pathname.split('/')[2]}
       theme="light"
       mode="inline"
       items={items}

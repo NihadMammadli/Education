@@ -1,48 +1,50 @@
 import { Table, Tag } from "antd";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react"
 import axios from "axios";
-
+import { ColumnHeader } from "../../Components";
 
 function App() {
-
     const [universities, setUniversities] = useState([])
+
+    const handleFilter = () => {
+        console.log("a")
+    }
 
     const columns = [
         {
-            title: 'Name',
+            title: <ColumnHeader header='Name' onFilter={handleFilter} />,
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: 'Creation Date',
+            title: <ColumnHeader header='Creation Date' onFilter={handleFilter} />,
             dataIndex: 'creation_date',
             key: 'creation_date',
         },
         {
-            title: 'Number of Faculties',
+            title: <ColumnHeader header='Number of Faculties' onFilter={handleFilter} />,
             dataIndex: 'faculty_number',
             key: 'faculty_number',
         },
         {
-            title: 'Global Ranking',
+            title: <ColumnHeader header='Global Ranking' onFilter={handleFilter} />,
             dataIndex: 'global_ranking',
             key: 'global_ranking',
         },
         {
-            title: 'Programs Offered',
+            title: <ColumnHeader header='Programs Offered' onFilter={handleFilter} />,
             dataIndex: 'offered_programs',
             key: 'offered_programs',
             render: (_, { offered_programs }) => (
                 <>
-                    {offered_programs.map((program) => {
+                    {offered_programs?.map((program) => {
                         let color = program.length > 5 ? 'geekblue' : 'green';
                         if (program === 'loser') {
                             color = 'volcano';
                         }
                         return (
                             <Tag color={color} key={program}>
-                                {program} 
+                                {program}
                             </Tag>
                         );
                     })}
