@@ -1,20 +1,41 @@
 import axios from "axios";
 import View from "./View"
-import { Table, Tag } from "antd";
-import { useEffect, useState } from "react"
+import { Table, Tag, Button } from "antd";
+import { useEffect, useRef, useState } from "react";
 import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { ColumnHeader, ConfirmModal, FilterDrawer } from "../../Components";
 
 function App() {
-    // Filter
-    const [filterOpen, setFilterOpen] = useState(false)
+    // Initials
+    const dataParams = useRef({
+    });
 
-    const handleFilter = () => {
+    // Filter
+    const [field, setField] = useState(false)
+    const [filterOpen, setFilterOpen] = useState(false)
+    const [filterData, setFilterData] = useState([])
+
+    const fieldValues = (field) => {
+        return universities.map(item => ({
+            name: item[field],
+            key: item[field]
+        }));
+    };
+
+    const handleFilter = (field) => {
+        setFilterData(fieldValues(field))
         setFilterOpen(true)
+        setField(field)
     }
 
     const closeFilter = () => {
         setFilterOpen(false)
+    }
+
+    const clearFilter = () => {
+        dataParams.current = {}
+
+        getTableData()
     }
 
     // View
@@ -58,7 +79,9 @@ function App() {
     const [universities, setUniversities] = useState([])
 
     const getTableData = () => {
-        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities").then((res) => {
+        axios.get("https://668be99a0b61b8d23b0baf7e.mockapi.io/api/education/universities", {
+            params: dataParams.current
+        }).then((res) => {
             setUniversities(res?.data)
         }).catch((error) => {
             console.error(error)
@@ -72,29 +95,29 @@ function App() {
     // Columns
     const columns = [
         {
-            title: <ColumnHeader header='Name' onFilter={handleFilter} />,
+            title: <ColumnHeader header='Name' onFilter={() => handleFilter('name')} />,
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: <ColumnHeader header='Creation Date' onFilter={handleFilter} />,
+            title: <ColumnHeader header='Creation Date' onFilter={() => handleFilter('creation_date')} />,
             dataIndex: 'creation_date',
             key: 'creation_date',
         },
         {
-            title: <ColumnHeader header='Number of Faculties' onFilter={handleFilter} />,
+            title: <ColumnHeader header='Number of Faculties' onFilter={() => handleFilter('faculty_number')} />,
             dataIndex: 'faculty_number',
             key: 'faculty_number',
         },
         {
-            title: <ColumnHeader header='Global Ranking' onFilter={handleFilter} />,
+            title: <ColumnHeader header='Global Ranking' onFilter={() => handleFilter('global_ranking')} />,
             dataIndex: 'global_ranking',
             key: 'global_ranking',
         },
 
         // Because of the mock API that I am using it is kinda hard to implement some functionalities
         {
-            title: <ColumnHeader header='Programs Offered' onFilter={handleFilter} />,
+            title: <ColumnHeader header='Programs Offered' />,
             dataIndex: 'offered_programs',
             key: 'offered_programs',
             render: (_, { offered_programs }) => (
@@ -139,13 +162,26 @@ function App() {
 
     return (
         <>
+            <Button onClick={() => clearFilter()}>
+                Clear Filters
+            </Button>
+
             <Table dataSource={universities} columns={columns} rowKey="id" />
 
             <View open={viewOpen} close={closeView} data={viewData} />
 
             <ConfirmModal open={confirmOpen} close={closeDelete} deleteFunction={confirmDelete} id={deletingID} />
 
-            <FilterDrawer open={filterOpen} close={closeFilter} />
+            <FilterDrawer
+                field={field}
+                open={filterOpen}
+                setField={setField}
+                close={closeFilter}
+                form={"high_schools"}
+                dataParams={dataParams}
+                filterData={filterData}
+                getTableData={getTableData}
+            />
         </>
     );
 }
